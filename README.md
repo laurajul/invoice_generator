@@ -2,7 +2,7 @@
 
 This project is an Invoice Generator that creates an invoice with an EPC payment QR code using the `segno` Python library. The invoice is generated as a PDF using LaTeX.
 
-![alt text](images/preview.png = 200x)
+<img src="images/preview.png" alt="alt text" width="200" />
 
 ## Features
 
