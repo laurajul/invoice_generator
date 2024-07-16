@@ -1,3 +1,5 @@
+import subprocess
+import os
 import segno
 from segno import helpers
 from datetime import datetime
@@ -42,7 +44,7 @@ def generate_invoice(amount, recipient_name, recipient_address, recipient_city, 
     qr_code_file = 'epc_qr_code.png'
     qr_code.save(qr_code_file, scale=5)
 
-    md_content = md_content.replace('[AMOUNT]', f"{amount:.2f}  \\euro")
+    md_content = md_content.replace('[AMOUNT]', f"{amount:.2f} {currency_symbol}")
 
     latex_template = f"""
     \\documentclass[11pt,a4paper]{{article}}
@@ -53,7 +55,7 @@ def generate_invoice(amount, recipient_name, recipient_address, recipient_city, 
     \\usepackage{{graphicx}}
     \\usepackage{{fancyhdr}}
 
-    \\geometry{{top=2cm, bottom=1cm, left=2.5cm, right=2.5cm}}
+    \\geometry{{top=0cm, bottom=1cm, left=2.5cm, right=2.5cm}}
 
     \\setlength{{\\parindent}}{{0pt}}
     \\setlength{{\\parskip}}{{0.4em}}
@@ -73,7 +75,7 @@ def generate_invoice(amount, recipient_name, recipient_address, recipient_city, 
         \\thispagestyle{{empty}}
         % Include the header image
         \\begin{{center}} 
-            \\vspace*{{-2.8cm}}
+            %\\vspace*{{}}
             \\noindent\\makebox[\\linewidth]{{\\includegraphics[width=\\paperwidth]{{images/ecg3.png}}}}
             \\vspace*{{0.3cm}}
         \\end{{center}}
@@ -105,7 +107,7 @@ def generate_invoice(amount, recipient_name, recipient_address, recipient_city, 
 
         {invoice_text}
 
-        \\textbf{{{unit}: {amount:.2f}  \\euro}}
+        \\textbf{{{unit}: {amount:.2f} {currency_symbol}}}
 
         {tax_notice}
 
@@ -137,6 +139,37 @@ def generate_invoice(amount, recipient_name, recipient_address, recipient_city, 
     with open(output_filename, 'w', encoding='utf-8') as f:
         f.write(latex_template)
 
+    return output_filename
+
+
+def compile_latex_to_pdf(latex_file):
+    try:
+        with open('pdflatex.log', 'w') as log_file:
+            subprocess.run(['pdflatex', latex_file], check=True, stdout=log_file, stderr=log_file)
+        print(f"Successfully compiled {latex_file} to PDF.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error during PDF compilation. Check pdflatex.log for details.")
+
+def cleanup(files_to_remove):
+    for file in files_to_remove:
+        try:
+            os.remove(file)
+            print(f"Removed file: {file}")
+        except OSError as e:
+            print(f"Error removing file {file}: {e}")
+
+
+def get_currency_symbol(currency):
+    currency_symbols = {
+        'euro': '\\euro',
+        'dollar': '\\$',
+        'franc': 'CHF',
+        'pound': '\\pounds',
+        # Add other currencies as needed
+    }
+    return currency_symbols.get(currency.lower(), currency)
+
+
 # Get input from user
 amount = input("Enter the amount: ")
 recipient_name = input("Enter the recipient's name: ")
@@ -144,7 +177,11 @@ recipient_address = input("Enter the recipient's address: ")
 recipient_city = input("Enter the recipient's city: ")
 recipient_country = input("Enter the recipient's country: ")
 invoice_number = input('Enter the invoice number:')
-output_filename = input('Enter the filename to save the invoice (e.g., invoice.tex): ')
+currency = input("Enter the currency (euro, dollar, franc, pound, etc.): ")
+currency_symbol = get_currency_symbol(currency)
+output_filename = input('Enter the filename to save the invoice (without .tex extension): ')
+if not output_filename.endswith('.tex'):
+    output_filename += '.tex'
 
 # Read and parse the markdown file
 md_file_path = 'invoice_details.md'
@@ -152,4 +189,14 @@ md_content = read_markdown_file(md_file_path)
 data, md_body = parse_markdown(md_content)
 
 # Generate the invoice
-generate_invoice(amount, recipient_name, recipient_address, recipient_city, recipient_country, invoice_number, data, md_body, output_filename)
+latex_file = generate_invoice(amount, recipient_name, recipient_address, recipient_city, recipient_country, invoice_number, data, md_body, output_filename)
+
+# Compile the LaTeX file to PDF
+compile_latex_to_pdf(latex_file)
+
+# List of files to remove after PDF generation
+files_to_remove = [latex_file, 'epc_qr_code.png', 'pdflatex.log', latex_file.replace('.tex', '.aux'), latex_file.replace('.tex', '.log')]
+
+# Cleanup intermediate files
+cleanup(files_to_remove)
+
