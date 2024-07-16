@@ -15,7 +15,7 @@ Title: Invoice for Workshop on X-Ray Diffraction Patterns \\"The Secret of Life"
 Unit: Workshop 
 Salutation: Hello,
 
-InvoiceText: Attached you will find the invoice for my workshop on X-Ray diffraction patterns which took place on October 25th 1952.
+InvoiceText: Attached you will find the invoice for my workshop on X-Ray diffraction patterns which took place on October \textsuperscript{th} 1952.
 
 TaxNotice: As a small business owner in accordance with § 19 Abs. 1 UStG, VAT is not charged.
 
