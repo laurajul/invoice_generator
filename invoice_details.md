@@ -1,7 +1,7 @@
 ---
 Name: Rosalind Franklin
 Address line 0: Sidgwick Ave
-Address line 1: ZIP Cambridge
+Address line 1: ZIP Kings College London
 Address line 2: UK
 Email: rosalind.franklin@kings.ac.uk
 TaxID: 000.000.000.000
