@@ -7,6 +7,7 @@ This project is an Invoice Generator that creates an invoice with an EPC payment
 - Generate professional invoices in PDF format
 - Include EPC payment QR codes for easy payments
 - Customizable invoice details via `invoice_details.md`
+- Two versions available: English (`invoice_generator_EN.py`) and German (`invoice_generator_DE.py`)
 
 ## Prerequisites
 
@@ -21,15 +22,14 @@ This project is an Invoice Generator that creates an invoice with an EPC payment
     cd invoice-generator
     ```
 
-2. Create a virtual environment and activate it:
+2. Create a conda environment from the environment YAML file:
     ```sh
-    python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    conda env create -f environment.yml
     ```
 
-3. Install the required packages:
+3. Activate the conda environment:
     ```sh
-    pip install -r requirements.txt
+    conda activate invoice-generator
     ```
 
 4. Ensure LaTeX is installed on your system. For TeX Live:
@@ -41,17 +41,22 @@ This project is an Invoice Generator that creates an invoice with an EPC payment
 
 ## Usage
 
-1. Ensure your virtual environment is activated:
+1. Ensure your conda environment is activated:
     ```sh
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    conda activate invoice-generator
     ```
 
-2. Run the invoice generator:
+2. Run the English version of the invoice generator:
     ```sh
-    python generate_invoice.py
+    python invoice_generator_EN.py
     ```
 
-3. The generated invoice will be saved as `invoice.pdf` in the current directory.
+3. Or, run the German version of the invoice generator:
+    ```sh
+    python invoice_generator_DE.py
+    ```
+
+4. The generated invoice will be saved as `invoice.pdf` in the current directory.
 
 ## Configuration
 

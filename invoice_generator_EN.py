@@ -63,12 +63,12 @@ def generate_invoice(amount, recipient_name, recipient_address, recipient_city, 
     \\fancyhf{{}} % Clear current header/footer settings
     \\rfoot{{Seite \\thepage}}
     \\lfoot{{
-        \\textbf{{Zahlungsinformationen:}}\\\\
-        Kontoinhaber: {data['Beneficiary']}\\\\
+        \\textbf{{Payment information:}}\\\\
+        Beneficiary: {data['Beneficiary']}\\\\
         IBAN: {data['IBAN']}\\\\
         BIC: {data['Bic']}\\\\
         Bank: {data['Bank']}\\\\
-        Verwendungszweck: {invoice_number}
+        Note to payee: {invoice_number}
     }}
 
     \\begin{{document}}
@@ -86,7 +86,7 @@ def generate_invoice(amount, recipient_name, recipient_address, recipient_city, 
         {data['Address line 1']}\\\\
         {data['Address line 2']} \\\\
         {data['Email']} \\\\
-        AHV-Nummer: {data['TaxID']} \\\\
+        TaxID: {data['TaxID']} \\\\
         \\today
 
         \\vspace{{0.4em}}
@@ -119,14 +119,14 @@ def generate_invoice(amount, recipient_name, recipient_address, recipient_city, 
 
         \\vspace{{0.9em}}
 
-        \\textbf{{Zahlungsinformationen:}}
+        \\textbf{{Payment Information:}}
         \\begin{{quote}}
             \\small % Makes the text smaller
-            Kontoinhaberin: \\textbf{{{data['Beneficiary']}}} \\\\
+            Beneficiary: \\textbf{{{data['Beneficiary']}}} \\\\
             IBAN: \\textbf{{{data['IBAN']}}}\\\\
             BIC: \\textbf{{{data['Bic']}}}\\\\
             Bank: \\textbf{{{data['Bank']}}}\\\\
-            Verwendungszweck: \\textbf{{{invoice_number}}}
+            Note to Payee: \\textbf{{{invoice_number}}}
         \\end{{quote}}
 
         % Include the QR code
